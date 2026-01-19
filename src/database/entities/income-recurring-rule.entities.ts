@@ -1,12 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  Index,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { IncomeFrequency } from '../enums';
 import { Income } from './income.entities';
 
@@ -17,29 +9,24 @@ export class IncomeRecurringRule {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'income_id', type: 'uuid' })
+  @Column('uuid', { name: 'income_id' })
   incomeId: string;
 
-  @OneToOne(() => Income, (i) => i.recurringRule, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'income_id' })
+  @ManyToOne(() => Income, (i) => i.recurringRules, { onDelete: 'CASCADE' })
   income: Income;
 
-  @Column({
-    type: 'enum',
-    enum: IncomeFrequency,
-    default: IncomeFrequency.ONE_TIME,
-  })
+  @Column({ type: 'enum', enum: IncomeFrequency, default: IncomeFrequency.ONE_TIME })
   frequency: IncomeFrequency;
 
-  @Column({ name: 'next_run_at', type: 'date' })
+  @Column({ type: 'date', name: 'next_run_at' })
   nextRunAt: string;
 
-  @Column({ name: 'end_at', type: 'date', nullable: true })
+  @Column({ type: 'date', name: 'end_at', nullable: true })
   endAt: string | null;
 
-  @Column({ type: 'boolean', default: true })
+  @Column('boolean', { default: true })
   active: boolean;
 
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  @CreateDateColumn({ type: 'timestamptz', name: 'created_at', default: () => 'now()' })
   createdAt: Date;
 }
