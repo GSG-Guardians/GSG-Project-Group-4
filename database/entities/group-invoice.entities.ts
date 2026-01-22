@@ -61,7 +61,9 @@ export class GroupInvoice {
   @Column('text', { nullable: true })
   description: string | null;
 
-  @OneToOne(() => Reminder, (reminder) => reminder.groupInvoice, { nullable: true })
+  @OneToOne(() => Reminder, (reminder) => reminder.groupInvoice, {
+    nullable: true,
+  })
   reminder: Reminder | null;
 
   @Column({ type: 'timestamptz', name: 'next_remind_at', nullable: true })
