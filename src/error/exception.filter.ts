@@ -117,7 +117,8 @@ export class TypeOrmExceptionFilter implements ExceptionFilter {
         case '57P03': // cannot_connect_now
         case '08006': // connection_failure
         case '08001': // sqlclient_unable_to_establish_sqlconnection
-        case '53300': { // too_many_connections
+        case '53300': {
+          // too_many_connections
           defaultError.statusCode = HttpStatus.SERVICE_UNAVAILABLE;
           defaultError.message = 'Database unavailable';
           break;
