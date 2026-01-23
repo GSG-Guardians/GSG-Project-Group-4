@@ -1,4 +1,4 @@
-import { ApiErrorResponse } from "src/types/api";
+import { ApiErrorResponse } from 'src/types/api';
 
 export function buildApiErrorResponse(args: {
   statusCode: number;
@@ -17,17 +17,17 @@ export function buildApiErrorResponse(args: {
 }
 
 export function parseUniqueDetail(detail?: string) {
-    if (!detail) return null;
+  if (!detail) return null;
 
-    const match = detail.match(/Key \((.+?)\)=\((.+?)\) already exists\./);
-    if (!match) return null;
+  const match = detail.match(/Key \((.+?)\)=\((.+?)\) already exists\./);
+  if (!match) return null;
 
-    const field = match[1];
-    const value = match[2];
+  const field = match[1];
+  const value = match[2];
 
-    return {
-      field,
-      message: `${field} already exists`,
-      value,
-    };
-  }
+  return {
+    field,
+    message: `${field} already exists`,
+    value,
+  };
+}

@@ -1,5 +1,5 @@
-import { HttpStatus } from "@nestjs/common";
-import { IMetaPagination } from "./pagination";
+import { HttpStatus } from '@nestjs/common';
+import { IMetaPagination } from './pagination';
 
 export type SuccessResponse<T> =
   | {
@@ -10,10 +10,9 @@ export type SuccessResponse<T> =
   | {
       success: true;
       data: T[];
-      meta: IMetaPagination; 
+      meta: IMetaPagination;
       message?: string;
     };
-
 
 export type ApiErrorResponse = {
   success: false;
