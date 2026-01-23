@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class SettingUp1768831979671 implements MigrationInterface {
-  name = 'SettingUp1768831979671';
+export class GenerateTables1768842583103 implements MigrationInterface {
+  name = 'GenerateTables1768842583103';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -21,15 +21,6 @@ export class SettingUp1768831979671 implements MigrationInterface {
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_d18df5dff26676faed7d3e1640" ON "email_verification_codes" ("user_id") `,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "password_reset_codes" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "user_id" uuid NOT NULL, "code_hash" character varying(255) NOT NULL, "expires_at" TIMESTAMP WITH TIME ZONE NOT NULL, "used_at" TIMESTAMP WITH TIME ZONE, "attempt_count" integer NOT NULL DEFAULT '0', "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "userId" uuid, CONSTRAINT "PK_f3a88f7bc4536c53f2b277a0b56" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_756e7aedffd312c673850a660b" ON "password_reset_codes" ("expires_at") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_421ca49f5a7b180365035267ca" ON "password_reset_codes" ("user_id") `,
     );
     await queryRunner.query(
       `CREATE TABLE "balance_history" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "user_id" uuid NOT NULL, "type" "public"."balance_history_type_enum" NOT NULL, "amount" numeric(14,2) NOT NULL, "balance_before" numeric(14,2) NOT NULL, "balance_after" numeric(14,2) NOT NULL, "currency" character(3) NOT NULL, "entity_type" character varying(40), "entity_id" uuid, "description" text, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "userId" uuid, CONSTRAINT "PK_dc0b0a31a6896d2e4fd3f08042c" PRIMARY KEY ("id"))`,
@@ -191,13 +182,19 @@ export class SettingUp1768831979671 implements MigrationInterface {
       `CREATE UNIQUE INDEX "IDX_97672ac88f789774dd47f7c8be" ON "users" ("email") `,
     );
     await queryRunner.query(
+      `CREATE TABLE "password_reset_codes" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "user_id" uuid NOT NULL, "code_hash" character varying(255) NOT NULL, "expires_at" TIMESTAMP WITH TIME ZONE NOT NULL, "used_at" TIMESTAMP WITH TIME ZONE, "attempt_count" integer NOT NULL DEFAULT '0', "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "userId" uuid, CONSTRAINT "PK_f3a88f7bc4536c53f2b277a0b56" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_756e7aedffd312c673850a660b" ON "password_reset_codes" ("expires_at") `,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_421ca49f5a7b180365035267ca" ON "password_reset_codes" ("user_id") `,
+    );
+    await queryRunner.query(
       `ALTER TABLE "assets" ADD CONSTRAINT "FK_d8cf9bdec7d2fad0852aec349c1" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "email_verification_codes" ADD CONSTRAINT "FK_97bef998b0d463cb053643822a3" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "password_reset_codes" ADD CONSTRAINT "FK_9c30b1d4c6199fd152c128dbd37" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "balance_history" ADD CONSTRAINT "FK_3e799f0d1c9ff376768d9bab2bb" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
@@ -256,9 +253,15 @@ export class SettingUp1768831979671 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "users" ADD CONSTRAINT "FK_0ee622a8e4fad7b194415eb63c0" FOREIGN KEY ("avatar_asset_id") REFERENCES "assets"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
+    await queryRunner.query(
+      `ALTER TABLE "password_reset_codes" ADD CONSTRAINT "FK_9c30b1d4c6199fd152c128dbd37" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `ALTER TABLE "password_reset_codes" DROP CONSTRAINT "FK_9c30b1d4c6199fd152c128dbd37"`,
+    );
     await queryRunner.query(
       `ALTER TABLE "users" DROP CONSTRAINT "FK_0ee622a8e4fad7b194415eb63c0"`,
     );
@@ -317,14 +320,18 @@ export class SettingUp1768831979671 implements MigrationInterface {
       `ALTER TABLE "balance_history" DROP CONSTRAINT "FK_3e799f0d1c9ff376768d9bab2bb"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "password_reset_codes" DROP CONSTRAINT "FK_9c30b1d4c6199fd152c128dbd37"`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "email_verification_codes" DROP CONSTRAINT "FK_97bef998b0d463cb053643822a3"`,
     );
     await queryRunner.query(
       `ALTER TABLE "assets" DROP CONSTRAINT "FK_d8cf9bdec7d2fad0852aec349c1"`,
     );
+    await queryRunner.query(
+      `DROP INDEX "public"."IDX_421ca49f5a7b180365035267ca"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "public"."IDX_756e7aedffd312c673850a660b"`,
+    );
+    await queryRunner.query(`DROP TABLE "password_reset_codes"`);
     await queryRunner.query(
       `DROP INDEX "public"."IDX_97672ac88f789774dd47f7c8be"`,
     );
@@ -460,13 +467,6 @@ export class SettingUp1768831979671 implements MigrationInterface {
       `DROP INDEX "public"."IDX_0dcb2d7814c63c78fad1e3ab6b"`,
     );
     await queryRunner.query(`DROP TABLE "balance_history"`);
-    await queryRunner.query(
-      `DROP INDEX "public"."IDX_421ca49f5a7b180365035267ca"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "public"."IDX_756e7aedffd312c673850a660b"`,
-    );
-    await queryRunner.query(`DROP TABLE "password_reset_codes"`);
     await queryRunner.query(
       `DROP INDEX "public"."IDX_d18df5dff26676faed7d3e1640"`,
     );
