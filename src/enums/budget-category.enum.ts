@@ -1,0 +1,8 @@
+export enum BudgetCategory {
+  FOOD = 'FOOD',
+  TRANSPORT = 'TRANSPORT',
+  ENTERTAINMENT = 'ENTERTAINMENT',
+  HEALTH = 'HEALTH',
+  SHOPPING = 'SHOPPING',
+  OTHERS = 'OTHERS',
+}
