@@ -52,6 +52,7 @@ export enum SplitMethod {
   CUSTOM_AMOUNT = 'CUSTOM_AMOUNT',
   PERCENTAGE = 'PERCENTAGE',
   ONE_PAYS = 'ONE_PAYS',
+  EXACT = 'EXACT',
 }
 
 export enum CategoryName {

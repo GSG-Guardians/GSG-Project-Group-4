@@ -15,6 +15,7 @@ import { User } from './user.entities';
 import { Asset } from './assets.entities';
 import { GroupInvoiceShare } from './group-invoice-share.entities';
 import { Reminder } from './reminders.entities';
+import { Currency } from './currency.entities';
 
 @Entity({ name: 'group_invoices' })
 @Index(['createdByUserId', 'dueDate'])
@@ -37,8 +38,12 @@ export class GroupInvoice {
   @Column('numeric', { name: 'amount_total', precision: 14, scale: 2 })
   amountTotal: string;
 
-  @Column('char', { length: 3 })
-  currency: string;
+  @Column('uuid', { name: 'currency_id' })
+  currencyId: string;
+
+  @ManyToOne(() => Currency)
+  @JoinColumn({ name: 'currency_id' })
+  currency: Currency;
 
   @Column({
     type: 'enum',

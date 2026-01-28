@@ -4,6 +4,7 @@ import {
   Entity,
   Index,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -22,6 +23,7 @@ import { GroupInvoice } from './group-invoice.entities';
 import { GroupInvoiceShare } from './group-invoice-share.entities';
 import { Notification } from './notifications.entities';
 import { UserReward } from './user-rewards.entities';
+import { Currency } from './currency.entities';
 
 @Entity({ name: 'users' })
 @Index(['email'], { unique: true })
@@ -48,8 +50,12 @@ export class User {
   @Column({ type: 'enum', enum: UserStatus, default: UserStatus.PENDING })
   status: UserStatus;
 
-  @Column('char', { name: 'default_currency', length: 3, default: 'USD' })
-  defaultCurrency: string;
+  @Column('uuid', { name: 'default_currency_id', nullable: true })
+  defaultCurrencyId: string;
+
+  @ManyToOne(() => Currency)
+  @JoinColumn({ name: 'default_currency_id' })
+  defaultCurrency: Currency;
 
   @Column('numeric', {
     name: 'current_balance',

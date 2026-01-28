@@ -4,10 +4,12 @@ import {
   Entity,
   Index,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { GroupInvoice } from './group-invoice.entities';
 import { User } from './user.entities';
+import { GroupInvoiceShareItem } from './group-invoice-share-item.entities';
 
 @Entity({ name: 'group_invoice_shares' })
 @Index(['groupInvoiceId', 'userId'], { unique: true })
@@ -43,4 +45,7 @@ export class GroupInvoiceShare {
     default: () => 'now()',
   })
   createdAt: Date;
+
+  @OneToMany(() => GroupInvoiceShareItem, (item) => item.share)
+  items: GroupInvoiceShareItem[];
 }
