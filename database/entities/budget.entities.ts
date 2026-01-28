@@ -8,11 +8,11 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { UserE } from './user.entity';
-import { BudgetCategory } from 'src/enums/budget-category.enum';
+import { User } from './user.entities';
+import { BudgetCategory } from '../enums';
 
 @Entity('budget')
-export class BudgetE {
+export class Budget {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -40,14 +40,10 @@ export class BudgetE {
   @Column({ type: 'text', nullable: true })
   notes?: string;
 
-  // Percentage calculated from spent vs allocated
-  // This can be calculated in the service layer
-  // spent_percentage: number;
-
   // Relationship to User - the user who created this budget
-  @ManyToOne(() => UserE, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
-  user: UserE;
+  user: User;
 
   @Column({ type: 'uuid' })
   user_id: string;

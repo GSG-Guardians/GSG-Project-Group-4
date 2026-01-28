@@ -7,10 +7,10 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { UserE } from './user.entity';
+import { User } from './user.entities';
 
 @Entity('financial_insight')
-export class FinancialInsightE {
+export class FinancialInsight {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -33,9 +33,9 @@ export class FinancialInsightE {
   is_read: boolean;
 
   // Relationship to User
-  @ManyToOne(() => UserE, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
-  user: UserE;
+  user: User;
 
   @Column({ type: 'uuid' })
   user_id: string;

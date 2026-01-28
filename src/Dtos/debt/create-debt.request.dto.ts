@@ -9,11 +9,9 @@ import {
   IsBoolean,
   MaxLength,
   Min,
-  IsUUID,
   IsInt,
 } from 'class-validator';
-import { PaymentStatus } from 'src/enums/payment-status.enum';
-import { DebtType } from 'src/enums/debt-type.enum';
+import { PaymentStatus, DebtType } from 'database/enums';
 
 export class CreateDebtRequestDto {
   @ApiProperty({

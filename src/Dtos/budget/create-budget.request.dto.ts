@@ -9,7 +9,7 @@ import {
   IsString,
   Min,
 } from 'class-validator';
-import { BudgetCategory } from 'src/enums/budget-category.enum';
+import { BudgetCategory } from 'database/enums';
 
 export class CreateBudgetRequestDto {
   @ApiProperty({

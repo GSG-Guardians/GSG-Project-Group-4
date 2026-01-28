@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BudgetCategory } from 'src/enums/budget-category.enum';
+import { BudgetCategory } from 'database/enums';
 
 export class CategoryBreakdownDto {
   @ApiProperty({
