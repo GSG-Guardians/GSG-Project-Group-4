@@ -3,11 +3,13 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BalanceTransactionType } from '../enums';
 import { User } from './user.entities';
+import { Currency } from './currency.entities';
 
 @Entity({ name: 'balance_history' })
 @Index(['userId', 'createdAt'])
@@ -35,8 +37,12 @@ export class BalanceHistory {
   @Column('numeric', { name: 'balance_after', precision: 14, scale: 2 })
   balanceAfter: string;
 
-  @Column('char', { length: 3 })
-  currency: string;
+  @Column('uuid', { name: 'currency_id' })
+  currencyId: string;
+
+  @ManyToOne(() => Currency)
+  @JoinColumn({ name: 'currency_id' })
+  currency: Currency;
 
   @Column('varchar', { name: 'entity_type', length: 40, nullable: true })
   entityType: string | null;

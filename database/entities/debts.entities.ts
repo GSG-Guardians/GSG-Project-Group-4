@@ -13,6 +13,7 @@ import { DebtDirection, DebtStatus } from '../enums';
 import { User } from './user.entities';
 import { Asset } from './assets.entities';
 import { Reminder } from './reminders.entities';
+import { Currency } from './currency.entities';
 
 @Entity({ name: 'debts' })
 @Index(['userId', 'status'])
@@ -37,8 +38,12 @@ export class Debt {
   @Column('numeric', { precision: 14, scale: 2 })
   amount: string;
 
-  @Column('char', { length: 3 })
-  currency: string;
+  @Column('uuid', { name: 'currency_id' })
+  currencyId: string;
+
+  @ManyToOne(() => Currency)
+  @JoinColumn({ name: 'currency_id' })
+  currency: Currency;
 
   @Column({ type: 'date', name: 'due_date' })
   dueDate: string;

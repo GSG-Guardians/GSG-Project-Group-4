@@ -13,6 +13,7 @@ import { BillStatus, ReminderFrequency } from '../enums';
 import { User } from './user.entities';
 import { Asset } from './assets.entities';
 import { Reminder } from './reminders.entities';
+import { Currency } from './currency.entities';
 
 @Entity({ name: 'bills' })
 @Index(['userId', 'dueDate'])
@@ -34,8 +35,12 @@ export class Bill {
   @Column('numeric', { precision: 14, scale: 2 })
   amount: string;
 
-  @Column('char', { length: 3 })
-  currency: string;
+  @Column('uuid', { name: 'currency_id' })
+  currencyId: string;
+
+  @ManyToOne(() => Currency)
+  @JoinColumn({ name: 'currency_id' })
+  currency: Currency;
 
   @Column({ type: 'enum', enum: BillStatus, default: BillStatus.UNPAID })
   status: BillStatus;

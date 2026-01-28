@@ -13,6 +13,7 @@ import { IncomeSource } from '../enums';
 import { User } from './user.entities';
 import { Asset } from './assets.entities';
 import { IncomeRecurringRule } from './income-recurring-rule.entities';
+import { Currency } from './currency.entities';
 
 @Entity({ name: 'incomes' })
 @Index(['userId', 'incomeDate'])
@@ -30,6 +31,13 @@ export class Income {
 
   @Column('numeric', { precision: 14, scale: 2 })
   amount: string;
+
+  @Column('uuid', { name: 'currency_id' })
+  currencyId: string;
+
+  @ManyToOne(() => Currency)
+  @JoinColumn({ name: 'currency_id' })
+  currency: Currency;
 
   @Column({ type: 'enum', enum: IncomeSource, default: IncomeSource.SALARY })
   source: IncomeSource;
