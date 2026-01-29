@@ -112,11 +112,6 @@ export class UserService {
 
     // phone change
     if (dto.phone !== undefined) {
-      if (dto.phone) {
-        const phoneExists = await this.userRepo.findOne({
-          where: { phone: dto.phone },
-        });
-      }
       user.phone = dto.phone ?? null;
     }
 

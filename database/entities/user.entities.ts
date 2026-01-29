@@ -41,7 +41,7 @@ export class User {
   @Column('varchar', { length: 255, unique: true })
   email: string;
 
-  @Column('varchar', { length: 20, nullable: true, unique: true })
+  @Column('varchar', { length: 20, nullable: true })
   @Index()
   phone: string | null;
 
