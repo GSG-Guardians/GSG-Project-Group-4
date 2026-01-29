@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SuccessResponse } from '../types/api';
-import { IMetaPagination, IPaginationResult } from '../types/pagination';
+import { SuccessResponse } from '../types/api.types';
+import { IMetaPagination, IPaginationResult } from '../types/pagination.types';
 
 interface IGenericResponse<T> {
     message?: string;
