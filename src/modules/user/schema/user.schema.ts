@@ -35,7 +35,6 @@ export const userValidationSchema = userBaseObjectSchema.superRefine(
   },
 ) satisfies ZodType<CreateUserDto>;
 
-
 export const updateUserValidationSchema = userBaseObjectSchema
   .pick({
     fullName: true,
