@@ -22,9 +22,8 @@ export class UnifiedResponseInterceptor<T> implements NestInterceptor<
     context: ExecutionContext,
     next: CallHandler,
   ): Observable<SuccessResponse<T>> {
-    
     return next.handle().pipe(
-      map((data) => {
+      map<TReturnedResponse<T>, SuccessResponse<T>>((data) => {
         if (this.isPaginatedResponse(data)) {
           const res: SuccessResponse<T> = {
             success: true,
@@ -58,19 +57,20 @@ export class UnifiedResponseInterceptor<T> implements NestInterceptor<
   private isPaginatedResponse(
     data: TReturnedResponse<T>,
   ): data is IPaginationResult<T> {
-    return data 
-        && typeof data === 'object' 
-        && 'data' in data 
-        && Array.isArray(data.data) 
-        && 'meta' in data;
+    return (
+      data &&
+      typeof data === 'object' &&
+      'data' in data &&
+      Array.isArray(data.data) &&
+      'meta' in data
+    );
   }
 
   private isGenericResponse(
     data: TReturnedResponse<T>,
   ): data is IGenericResponse<T> {
-    return data 
-        && typeof data === 'object' 
-        && 'data' in data 
-        && 'message' in data;
+    return (
+      data && typeof data === 'object' && 'data' in data && 'message' in data
+    );
   }
 }
