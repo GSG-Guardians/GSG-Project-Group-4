@@ -7,6 +7,7 @@ import { dataSourceOptions } from '../database/data-source';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { UnifiedResponseInterceptor } from './interceptors/unifiedResponse.interceptor';
 import { UserModule } from './modules/user/user.module';
+import { DatabaseModule } from './modules/database/database.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UserModule } from './modules/user/user.module';
       envFilePath: '.env',
     }),
     TypeOrmModule.forRoot(dataSourceOptions),
+    DatabaseModule,
     UserModule,
   ],
   controllers: [AppController],

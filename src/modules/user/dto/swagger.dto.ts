@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { CreateUserDto, UpdateUserDto } from './request.dto';
 import { UserResponseDto } from './response.dto';
+import { UserRole, UserStatus } from 'database/enums';
 
 // ---------- Requests ----------
 
@@ -15,7 +16,7 @@ export class CreateUserRequestSwaggerDto implements CreateUserDto {
   phone?: string | null;
 
   @ApiPropertyOptional({ format: 'uuid', nullable: true })
-  defaultCurrencyId: string;
+  defaultCurrencyId?: string | null;
 
   @ApiPropertyOptional({ example: 'LOCAL' })
   provider?: 'LOCAL' | 'GOOGLE' | 'FACEBOOK';
@@ -29,6 +30,15 @@ export class CreateUserRequestSwaggerDto implements CreateUserDto {
     minLength: 6,
   })
   password?: string;
+
+  @ApiPropertyOptional({ enum: UserRole, example: UserRole.USER })
+  role?: UserRole;
+
+  @ApiPropertyOptional({ enum: UserStatus, example: UserStatus.ACTIVE })
+  status?: UserStatus;
+
+  @ApiPropertyOptional({ format: 'uuid', nullable: true })
+  avatarAssetId?: string;
 }
 
 export class UpdateUserRequestSwaggerDto implements UpdateUserDto {
@@ -44,14 +54,8 @@ export class UpdateUserRequestSwaggerDto implements UpdateUserDto {
   @ApiPropertyOptional({ format: 'uuid', nullable: true })
   defaultCurrencyId?: string | null;
 
-  @ApiPropertyOptional({ example: 'LOCAL' })
-  provider?: 'LOCAL' | 'GOOGLE' | 'FACEBOOK';
-
-  @ApiPropertyOptional({ example: 'google-oauth-id-123', nullable: true })
-  providerId?: string | null;
-
   @ApiPropertyOptional({ format: 'uuid', nullable: true })
-  avatarAssetId?: string | null;
+  avatarAssetId?: string;
 }
 
 // ---------- Response ----------
@@ -70,19 +74,19 @@ export class UserResponseSwaggerDto implements UserResponseDto {
   phone: string | null;
 
   @ApiProperty({ example: 'USER' })
-  role: any;
+  role: UserRole;
 
   @ApiProperty({ example: 'ACTIVE' })
-  status: any;
+  status: UserStatus;
 
   @ApiProperty({ format: 'uuid', nullable: true })
   defaultCurrencyId: string | null;
 
   @ApiProperty({ example: '0.00' })
-  currentBalance: any;
+  currentBalance: string;
 
   @ApiProperty({ example: '0' })
-  points: any;
+  points: string;
 
   @ApiProperty({ format: 'uuid', nullable: true })
   avatarAssetId: string | null;

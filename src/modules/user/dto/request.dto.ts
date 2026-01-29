@@ -10,20 +10,12 @@ export type CreateUserDto = {
   defaultCurrencyId?: string | null;
   role?: UserRole;
   status?: UserStatus;
+  avatarAssetId?: string;
 };
 
 export type UpdateUserDto = Partial<
   Pick<
     CreateUserDto,
-    | 'fullName'
-    | 'email'
-    | 'phone'
-    | 'defaultCurrencyId'
-    | 'provider'
-    | 'providerId'
+    'fullName' | 'email' | 'phone' | 'defaultCurrencyId' | 'avatarAssetId'
   >
-> & {
-  avatarAssetId?: string | null;
-  role?: UserRole;
-  status?: UserStatus;
-};
+>;

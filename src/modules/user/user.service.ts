@@ -6,10 +6,10 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcryptjs';
 
 import { User } from '../../../database/entities/user.entities';
 import { Currency } from '../../../database/entities/currency.entities';
+import { DatabaseService } from '../database/database.service';
 
 import { CreateUserDto, UpdateUserDto } from './dto/request.dto';
 import { UserResponseDto } from './dto/response.dto';
@@ -26,16 +26,15 @@ export class UserService {
     @InjectRepository(User) private readonly userRepo: Repository<User>,
     @InjectRepository(Currency)
     private readonly currencyRepo: Repository<Currency>,
+    private readonly databaseService: DatabaseService,
   ) {}
 
   async create(dto: CreateUserDto): Promise<UserResponseDto> {
     const email = dto.email.toLowerCase();
 
-    // unique email
     const emailExists = await this.userRepo.findOne({ where: { email } });
     if (emailExists) throw new ConflictException('Email already exists');
 
-    // validate currency if provided (your column is nullable)
     if (dto.defaultCurrencyId) {
       const currency = await this.currencyRepo.findOne({
         where: { id: dto.defaultCurrencyId },
@@ -45,11 +44,8 @@ export class UserService {
 
     const provider = dto.provider ?? 'LOCAL';
 
-    // hash password for LOCAL
     const passwordHash =
-      provider === 'LOCAL' && dto.password
-        ? await bcrypt.hash(dto.password, 10)
-        : null;
+      provider === 'LOCAL' && dto.password ? dto.password : null;
 
     const user = this.userRepo.create({
       fullName: dto.fullName,
@@ -76,21 +72,18 @@ export class UserService {
   async findAll(
     query: IPaginationQuery,
   ): Promise<IPaginationResult<UserResponseDto>> {
-    const page = Math.max(1, Number(query.page || 1));
-    const limit = Math.min(100, Math.max(1, Number(query.limit || 10)));
-    const skip = (page - 1) * limit;
+    const { page, limit, skip, take } =
+      this.databaseService.createPaginationOptions(query);
 
     const [rows, total] = await this.userRepo.findAndCount({
       order: { createdAt: 'DESC' },
       skip,
-      take: limit,
+      take,
     });
-
-    const totalPages = Math.max(1, Math.ceil(total / limit));
 
     return {
       data: rows.map(toUserResponse),
-      meta: { total, page, limit, totalPages },
+      meta: this.databaseService.createPaginationMetaData(limit, page, total),
     };
   }
 
@@ -110,12 +103,9 @@ export class UserService {
       }
     }
 
-    // phone change
     if (dto.phone !== undefined) {
       user.phone = dto.phone ?? null;
     }
-
-    // currency change + validation
     if (dto.defaultCurrencyId !== undefined) {
       if (dto.defaultCurrencyId) {
         const currency = await this.currencyRepo.findOne({
@@ -130,20 +120,12 @@ export class UserService {
     if (dto.fullName !== undefined) user.fullName = dto.fullName;
     if (dto.avatarAssetId !== undefined)
       user.avatarAssetId = dto.avatarAssetId ?? null;
-
-    if (dto.provider !== undefined) user.provider = dto.provider;
-    if (dto.providerId !== undefined) user.providerId = dto.providerId ?? null;
-
-    // admin fields (protect with guards later)
-    if (dto.role !== undefined) user.role = dto.role;
-    if (dto.status !== undefined) user.status = dto.status;
-
     const saved = await this.userRepo.save(user);
     return toUserResponse(saved);
   }
 
   async remove(id: string): Promise<{ data: null; message: string }> {
-    const exists = await this.userRepo.exist({ where: { id } });
+    const exists = await this.userRepo.exists({ where: { id } });
     if (!exists) throw new NotFoundException('User not found');
 
     await this.userRepo.delete({ id });
