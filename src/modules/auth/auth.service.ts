@@ -11,7 +11,7 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   async signUp(data: TSignUpRequest) {
     const hashedPassword = await this.hashPassword(data.password);
@@ -52,7 +52,8 @@ export class AuthService {
       data.password,
     );
 
-    if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials');
+    if (!isPasswordValid)
+      throw new UnauthorizedException('Invalid credentials');
 
     const userToToken: TUserForToken = {
       id: user.id,

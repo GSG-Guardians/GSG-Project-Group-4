@@ -14,7 +14,7 @@ import { ApiSuccess } from 'src/helpers/swaggerDTOWrapper.helpers';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @Post('sign-up')
   @ApiBody({ type: SignUpRequestSwaggerDto })
