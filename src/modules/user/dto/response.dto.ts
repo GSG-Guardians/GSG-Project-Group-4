@@ -1,6 +1,4 @@
 import { User } from 'database/entities/user.entities';
-import { UserRole, UserStatus } from '../../../../database/enums';
-
 export type UserResponseDto = {
   id: User['id'];
   fullName: User['fullName'];
