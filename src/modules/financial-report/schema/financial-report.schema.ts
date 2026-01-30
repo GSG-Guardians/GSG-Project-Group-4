@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
 import z, { ZodType } from 'zod';
 import { GetFinancialReportDto } from '../dto/request.dto';
 
