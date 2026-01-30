@@ -27,7 +27,7 @@ export class UserService {
     @InjectRepository(Currency)
     private readonly currencyRepo: Repository<Currency>,
     private readonly databaseService: DatabaseService,
-  ) {}
+  ) { }
 
   async create(dto: CreateUserDto): Promise<UserResponseDto> {
     const email = dto.email.toLowerCase();
@@ -77,6 +77,10 @@ export class UserService {
     const user = await this.userRepo.findOne({ where: { id } });
     if (!user) throw new NotFoundException('User not found');
     return toUserResponse(user);
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userRepo.findOne({ where: { email } });
   }
 
   async findAll(

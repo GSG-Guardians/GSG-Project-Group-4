@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
-import { TSignUpRequest } from './dto';
+import { TSignInRequest, TSignUpRequest } from './dto';
 import * as argon from 'argon2';
 import { IJWTPayload, TUserForToken } from 'src/types/jwt.types';
 
@@ -11,7 +11,7 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async signUp(data: TSignUpRequest) {
     const hashedPassword = await this.hashPassword(data.password);
@@ -21,6 +21,38 @@ export class AuthService {
       provider: 'LOCAL',
       providerId: null,
     });
+
+    const userToToken: TUserForToken = {
+      id: user.id,
+      email: user.email,
+      fullName: user.fullName,
+      defaultCurrencyId: user.defaultCurrencyId,
+      provider: user.provider,
+      status: user.status,
+      role: user.role,
+    };
+
+    const token = this.generateToken(userToToken);
+
+    return { user, token };
+  }
+
+  async signIn(data: TSignInRequest) {
+    const user = await this.userService.findByEmail(data.email);
+
+    if (!user) throw new UnauthorizedException('Invalid credentials');
+
+    if (!user.passwordHash)
+      throw new UnauthorizedException(
+        'Invalid credentials - User has no password (maybe social login?)',
+      );
+
+    const isPasswordValid = await this.verifyPassword(
+      user.passwordHash,
+      data.password,
+    );
+
+    if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials');
 
     const userToToken: TUserForToken = {
       id: user.id,
