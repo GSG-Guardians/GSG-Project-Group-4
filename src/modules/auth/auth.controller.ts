@@ -3,10 +3,12 @@ import { AuthService } from './auth.service';
 import {
   AuthResponseSwaggerDto,
   SignUpRequestSwaggerDto,
+  SignInRequestSwaggerDto,
   type TSignUpRequest,
+  type TSignInRequest,
 } from './dto';
 import { ZodValidationPipe } from 'src/pipes/zodValidation.pipe';
-import { SignUpSchema } from './schemas/auth.schema';
+import { SignUpSchema, SignInSchema } from './schemas/auth.schema';
 import { ApiBody } from '@nestjs/swagger';
 import { ApiSuccess } from 'src/helpers/swaggerDTOWrapper.helpers';
 
@@ -19,5 +21,12 @@ export class AuthController {
   @ApiSuccess(AuthResponseSwaggerDto)
   signUp(@Body(new ZodValidationPipe(SignUpSchema)) data: TSignUpRequest) {
     return this.authService.signUp(data);
+  }
+
+  @Post('sign-in')
+  @ApiBody({ type: SignInRequestSwaggerDto })
+  @ApiSuccess(AuthResponseSwaggerDto)
+  signIn(@Body(new ZodValidationPipe(SignInSchema)) data: TSignInRequest) {
+    return this.authService.signIn(data);
   }
 }

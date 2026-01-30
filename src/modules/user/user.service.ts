@@ -79,6 +79,10 @@ export class UserService {
     return toUserResponse(user);
   }
 
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userRepo.findOne({ where: { email } });
+  }
+
   async findAll(
     query: IPaginationQuery,
   ): Promise<IPaginationResult<UserResponseDto>> {
