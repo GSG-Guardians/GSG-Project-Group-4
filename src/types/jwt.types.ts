@@ -6,20 +6,11 @@ export interface IJWTPayload {
   role: UserRole;
   email: string;
   fullName: string;
-  defaultCurrencyId: string;
   provider: string;
   status: string;
 }
 
 export type TUserForToken = Pick<
   User,
-  | 'id'
-  | 'role'
-  | 'email'
-  | 'fullName'
-  | 'defaultCurrencyId'
-  | 'provider'
-  | 'status'
+  'id' | 'role' | 'email' | 'fullName' | 'provider' | 'status'
 >;
-
-export type TUserForResponse = Omit<User, 'passwordHash'>;
