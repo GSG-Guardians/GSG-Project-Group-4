@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 export const UpdateBillSchema = z.object({
@@ -10,4 +9,4 @@ export const UpdateBillSchema = z.object({
   assetId: z.string().uuid().nullable().optional(),
 });
 
-export class UpdateBillDto extends createZodDto(UpdateBillSchema) { }
+export type UpdateBillDto = z.infer<typeof UpdateBillSchema>;

@@ -32,7 +32,7 @@ import { ZodValidationPipe } from '../../pipes/zodValidation.pipe';
 @ApiTags('Users')
 @Controller('v1/users')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   @ApiBody({ type: CreateUserRequestSwaggerDto })
@@ -50,8 +50,15 @@ export class UserController {
   }
 
   @Get('search')
-  @ApiOperation({ summary: 'Search users', description: 'Search users to add participants for group bills' })
-  @ApiQuery({ name: 'name', required: true, description: 'Search query (name or email)' })
+  @ApiOperation({
+    summary: 'Search users',
+    description: 'Search users to add participants for group bills',
+  })
+  @ApiQuery({
+    name: 'name',
+    required: true,
+    description: 'Search query (name or email)',
+  })
   searchUsers(@Query('name') name: string) {
     return this.userService.searchUsers(name);
   }

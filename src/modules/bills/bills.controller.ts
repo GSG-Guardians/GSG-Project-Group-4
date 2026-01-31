@@ -15,7 +15,18 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiQuery, ApiParam, ApiConsumes, ApiResponse } from '@nestjs/swagger';
 import { BillsService } from './bills.service';
-import { CreateBillDto, UpdateBillDto, UpdateBillStatusDto, SmartParseResponseDto } from './dto';
+import { ZodValidationPipe } from '../../pipes/zodValidation.pipe';
+import {
+    CreateBillSchema,
+    UpdateBillSchema,
+    UpdateBillStatusSchema,
+    SmartParseResponseDto,
+} from './dto';
+import type {
+    CreateBillDto,
+    UpdateBillDto,
+    UpdateBillStatusDto,
+} from './dto';
 
 type UploadedFilePayload = {
     originalname: string;
@@ -55,14 +66,19 @@ export class BillsController {
 
     @Post()
     @ApiOperation({ summary: 'Create a new bill', description: 'Create a new bill record (individual or group)' })
-    async createBill(@Body() dto: CreateBillDto) {
+    async createBill(
+        @Body(new ZodValidationPipe(CreateBillSchema)) dto: CreateBillDto,
+    ) {
         return this.billsService.createBill(dto);
     }
 
     @Put(':id')
     @ApiOperation({ summary: 'Update bill', description: 'Update bill name, amount, or settings' })
     @ApiParam({ name: 'id', description: 'Bill ID' })
-    async updateBill(@Param('id') id: string, @Body() dto: UpdateBillDto) {
+    async updateBill(
+        @Param('id') id: string,
+        @Body(new ZodValidationPipe(UpdateBillSchema)) dto: UpdateBillDto,
+    ) {
         return this.billsService.updateBill(id, dto);
     }
 
@@ -78,7 +94,8 @@ export class BillsController {
     @ApiParam({ name: 'id', description: 'Bill ID' })
     async updateStatus(
         @Param('id') id: string,
-        @Body() dto: UpdateBillStatusDto,
+        @Body(new ZodValidationPipe(UpdateBillStatusSchema))
+        dto: UpdateBillStatusDto,
     ) {
         return this.billsService.updateBillStatus(id, dto.status);
     }

@@ -38,7 +38,6 @@
     "@nestjs/swagger": "^11.2.5",
     "@nestjs/typeorm": "^11.0.0",
     "dotenv": "^17.2.3",
-    "nestjs-zod": "^3.0.0",
     "argon2": "^0.44.0",
     "axios": "^1.13.4",
     "class-transformer": "^0.5.1",
