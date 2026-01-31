@@ -7,9 +7,12 @@ import {
   Post,
   Query,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import type { Request } from 'express';
+
+import { JwtCookieGuard } from '../auth/guards/cookies.guard';
 
 import { FinancialReportService } from './financial-report.service';
 import type { GetFinancialReportDto } from './dto/request.dto';
@@ -21,6 +24,7 @@ import { BudgetCategory } from '../../../database/enums';
 
 @ApiTags('Financial Reports')
 @Controller('financial-reports')
+@UseGuards(JwtCookieGuard)
 export class FinancialReportController {
   constructor(
     private readonly financialReportService: FinancialReportService,
@@ -34,7 +38,7 @@ export class FinancialReportController {
     dto: GetFinancialReportDto,
     @Req() req: Request,
   ) {
-    const userId = req.user?.id || 'temp-user-id';
+    const userId = req.user!.id;
     return this.financialReportService.getFinancialReport(userId, dto);
   }
 
@@ -51,14 +55,14 @@ export class FinancialReportController {
     },
     @Req() req: Request,
   ) {
-    const userId = req.user?.id || 'temp-user-id';
+    const userId = req.user!.id;
     return this.financialReportService.createInsight(userId, data);
   }
 
   @Patch('insights/:id/read')
   @ApiOperation({ summary: 'Mark an insight as read' })
   async markInsightAsRead(@Param('id') id: string, @Req() req: Request) {
-    const userId = req.user?.id || 'temp-user-id';
+    const userId = req.user!.id;
     return this.financialReportService.markInsightAsRead(id, userId);
   }
 }

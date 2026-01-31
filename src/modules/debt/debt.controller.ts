@@ -8,9 +8,12 @@ import {
   Post,
   Query,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import type { Request } from 'express';
+
+import { JwtCookieGuard } from '../auth/guards/cookies.guard';
 
 import { DebtService } from './debt.service';
 import type {
@@ -36,6 +39,7 @@ import { ZodValidationPipe } from '../../pipes/zodValidation.pipe';
 
 @ApiTags('Debts')
 @Controller('debts')
+@UseGuards(JwtCookieGuard)
 export class DebtController {
   constructor(private readonly debtService: DebtService) {}
 
@@ -46,7 +50,7 @@ export class DebtController {
     @Body(new ZodValidationPipe(debtValidationSchema)) dto: CreateDebtDto,
     @Req() req: Request,
   ) {
-    const userId = req.user?.id || 'temp-user-id';
+    const userId = req.user!.id;
     return this.debtService.create(userId, dto);
   }
 
@@ -58,14 +62,14 @@ export class DebtController {
     @Query() filter: FilterDebtDto,
     @Req() req: Request,
   ) {
-    const userId = req.user?.id || 'temp-user-id';
+    const userId = req.user!.id;
     return this.debtService.findAll(userId, query, filter);
   }
 
   @Get('summary')
   @ApiOperation({ summary: 'Get debt summary' })
   async getSummary(@Req() req: Request) {
-    const userId = req.user?.id || 'temp-user-id';
+    const userId = req.user!.id;
     return this.debtService.getDebtSummary(userId);
   }
 
@@ -73,7 +77,7 @@ export class DebtController {
   @ApiOperation({ summary: 'Get a debt by ID' })
   @ApiSuccess(DebtResponseSwaggerDto)
   async findOne(@Param('id') id: string, @Req() req: Request) {
-    const userId = (req.user as any)?.userId || 'temp-user-id';
+    const userId = req.user!.id;
     return this.debtService.findOne(id, userId);
   }
 
@@ -85,14 +89,14 @@ export class DebtController {
     @Body(new ZodValidationPipe(updateDebtValidationSchema)) dto: UpdateDebtDto,
     @Req() req: Request,
   ) {
-    const userId = req.user?.id || 'temp-user-id';
+    const userId = req.user!.id;
     return this.debtService.update(id, userId, dto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a debt' })
   async remove(@Param('id') id: string, @Req() req: Request) {
-    const userId = req.user?.id || 'temp-user-id';
+    const userId = req.user!.id;
     return this.debtService.remove(id, userId);
   }
 }

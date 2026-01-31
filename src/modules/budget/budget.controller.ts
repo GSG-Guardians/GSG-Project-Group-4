@@ -8,9 +8,12 @@ import {
   Body,
   Query,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import type { Request } from 'express';
+
+import { JwtCookieGuard } from '../auth/guards/cookies.guard';
 
 import { BudgetService } from './budget.service';
 import type {
@@ -37,6 +40,7 @@ import { ZodValidationPipe } from '../../pipes/zodValidation.pipe';
 
 @ApiTags('Budgets')
 @Controller('budgets')
+@UseGuards(JwtCookieGuard)
 export class BudgetController {
   constructor(private readonly budgetService: BudgetService) {}
 
@@ -48,7 +52,7 @@ export class BudgetController {
     @Body(new ZodValidationPipe(budgetValidationSchema)) body: CreateBudgetDto,
     @Req() req: Request,
   ) {
-    const userId = req.user?.id || 'temp-user-id'; // TODO: Get from auth guard
+    const userId = req.user!.id;
     return this.budgetService.create(userId, body);
   }
 
@@ -76,7 +80,7 @@ export class BudgetController {
     @Query() filter: FilterBudgetDto,
     @Req() req: Request,
   ) {
-    const userId = req.user?.id || 'temp-user-id';
+    const userId = req.user!.id;
     return this.budgetService.findAll(userId, query, filter);
   }
 
@@ -84,7 +88,7 @@ export class BudgetController {
   @ApiOperation({ summary: 'Get budget summary statistics' })
   @ApiSuccess(Object)
   getBudgetSummary(@Req() req: Request) {
-    const userId = req.user?.id || 'temp-user-id';
+    const userId = req.user!.id;
     return this.budgetService.getBudgetSummary(userId);
   }
 
@@ -92,7 +96,7 @@ export class BudgetController {
   @ApiOperation({ summary: 'Get a specific budget by ID' })
   @ApiSuccess(BudgetResponseSwaggerDto)
   findOne(@Param('id') id: string, @Req() req: Request) {
-    const userId = req.user?.id || 'temp-user-id';
+    const userId = req.user!.id;
     return this.budgetService.findOne(id, userId);
   }
 
@@ -106,7 +110,7 @@ export class BudgetController {
     body: UpdateBudgetDto,
     @Req() req: Request,
   ) {
-    const userId = req.user?.id || 'temp-user-id';
+    const userId = req.user!.id;
     return this.budgetService.update(id, userId, body);
   }
 
@@ -114,7 +118,7 @@ export class BudgetController {
   @ApiOperation({ summary: 'Delete a budget' })
   @ApiSuccess(Object)
   remove(@Param('id') id: string, @Req() req: Request) {
-    const userId = req.user?.id || 'temp-user-id';
+    const userId = req.user!.id;
     return this.budgetService.remove(id, userId);
   }
 }
