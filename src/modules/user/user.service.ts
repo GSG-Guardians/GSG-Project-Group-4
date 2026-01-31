@@ -27,7 +27,7 @@ export class UserService {
     @InjectRepository(Currency)
     private readonly currencyRepo: Repository<Currency>,
     private readonly databaseService: DatabaseService,
-  ) { }
+  ) {}
 
   async create(dto: CreateUserDto): Promise<UserResponseDto> {
     const email = dto.email.toLowerCase();
@@ -152,10 +152,7 @@ export class UserService {
     }
 
     const users = await this.userRepo.find({
-      where: [
-        { fullName: Like(`%${name}%`) },
-        { email: Like(`%${name}%`) },
-      ],
+      where: [{ fullName: Like(`%${name}%`) }, { email: Like(`%${name}%`) }],
       select: ['id', 'fullName', 'email'],
       take: 20,
     });

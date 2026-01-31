@@ -8,16 +8,16 @@ import { GroupInvoiceShare } from '../../../database/entities/group-invoice-shar
 import { GroupInvoiceShareItem } from '../../../database/entities/group-invoice-share-item.entities';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([
-            Bill,
-            GroupInvoice,
-            GroupInvoiceShare,
-            GroupInvoiceShareItem,
-        ]),
-    ],
-    controllers: [BillsController],
-    providers: [BillsService],
-    exports: [BillsService],
+  imports: [
+    TypeOrmModule.forFeature([
+      Bill,
+      GroupInvoice,
+      GroupInvoiceShare,
+      GroupInvoiceShareItem,
+    ]),
+  ],
+  controllers: [BillsController],
+  providers: [BillsService],
+  exports: [BillsService],
 })
-export class BillsModule { }
+export class BillsModule {}
