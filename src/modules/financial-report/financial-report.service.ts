@@ -57,13 +57,12 @@ export class FinancialReportService {
     const categoryBreakdown = Array.from(categoryMap.entries()).map(
       ([category, data]) => ({
         category,
-        allocatedAmount: data.allocated.toFixed(2),
-        spentAmount: data.spent.toFixed(2),
-        remainingAmount: (data.allocated - data.spent).toFixed(2),
-        utilizationPercentage:
+        allocated: data.allocated.toFixed(2),
+        spent: data.spent.toFixed(2),
+        percentage:
           data.allocated > 0
-            ? ((data.spent / data.allocated) * 100).toFixed(2)
-            : '0.00',
+            ? Number(((data.spent / data.allocated) * 100).toFixed(2))
+            : 0,
       }),
     );
 
@@ -71,7 +70,10 @@ export class FinancialReportService {
     const debts = await this.debtRepo.find({
       where: {
         userId,
-        dueDate: Between(startDate, endDate),
+        dueDate: Between(
+          startDate.toISOString().split('T')[0],
+          endDate.toISOString().split('T')[0],
+        ),
       },
     });
 
@@ -90,20 +92,17 @@ export class FinancialReportService {
     const insights = await this.insightRepo.find({
       where: {
         user_id: userId,
-        created_at: Between(startDate, endDate),
+        createdAt: Between(startDate, endDate),
       },
-      order: { created_at: 'DESC' },
+      order: { createdAt: 'DESC' },
       take: 5,
     });
 
     const insightsData = insights.map((insight) => ({
-      insightType: insight.insight_type,
+      type: insight.insight_type,
       title: insight.title,
       message: insight.message,
-      category: insight.category ?? undefined,
-      period: insight.period ?? undefined,
       isRead: insight.is_read,
-      createdAt: insight.created_at.toISOString(),
     }));
 
     // Calculate totals
@@ -116,26 +115,26 @@ export class FinancialReportService {
       0,
     );
 
+    // Calculate totals for income/expenses (would need transaction data)
+    const totalIncome = 0; // Mock - would come from income transactions
+    const totalExpenses = totalSpent;
+    const netSavings = totalIncome - totalExpenses;
+    const budgetUtilization =
+      totalAllocated > 0 ? (totalSpent / totalAllocated) * 100 : 0;
+
     return {
       period: {
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
+        startDate: startDate,
+        endDate: endDate,
       },
       summary: {
-        totalAllocated: totalAllocated.toFixed(2),
-        totalSpent: totalSpent.toFixed(2),
-        totalRemaining: (totalAllocated - totalSpent).toFixed(2),
-        totalDebtsOwed: totalDebtsOwed.toFixed(2),
-        totalDebtsOwe: totalDebtsOwe.toFixed(2),
-        netWorth: (
-          totalAllocated -
-          totalSpent +
-          totalDebtsOwed -
-          totalDebtsOwe
-        ).toFixed(2),
+        totalIncome: totalIncome.toFixed(2),
+        totalExpenses: totalExpenses.toFixed(2),
+        netSavings: netSavings.toFixed(2),
+        budgetUtilization,
       },
       categoryBreakdown,
-      weeklyExpenses,
+      weeklyTrend: weeklyExpenses,
       insights: insightsData,
     };
   }
@@ -169,8 +168,8 @@ export class FinancialReportService {
       insightType: string;
       title: string;
       message: string;
-      category?: BudgetCategory;
-      period?: string;
+      periodStart: Date;
+      periodEnd: Date;
     },
   ) {
     const insight = this.insightRepo.create({
@@ -178,8 +177,8 @@ export class FinancialReportService {
       insight_type: data.insightType,
       title: data.title,
       message: data.message,
-      category: data.category ?? null,
-      period: data.period ?? null,
+      period_start: data.periodStart,
+      period_end: data.periodEnd,
       is_read: false,
     });
 

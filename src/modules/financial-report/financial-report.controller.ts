@@ -46,8 +46,8 @@ export class FinancialReportController {
       insightType: string;
       title: string;
       message: string;
-      category?: BudgetCategory;
-      period?: string;
+      periodStart: Date;
+      periodEnd: Date;
     },
     @Req() req: Request,
   ) {
