@@ -68,7 +68,10 @@ export class BudgetService {
     const { page, limit, skip, take } =
       this.databaseService.createPaginationOptions(query);
 
-    const where: any = { user_id: userId, is_active: true };
+    const where: Record<string, unknown> = {
+      user_id: userId,
+      is_active: true,
+    };
 
     if (filter?.category) {
       where.category = filter.category;

@@ -21,11 +21,7 @@ import type {
   UpdateDebtDto,
   FilterDebtDto,
 } from './dto/request.dto';
-import {
-  CreateDebtRequestSwaggerDto,
-  UpdateDebtRequestSwaggerDto,
-  DebtResponseSwaggerDto,
-} from './dto/swagger.dto';
+import { DebtResponseSwaggerDto } from './dto/swagger.dto';
 import {
   debtValidationSchema,
   updateDebtValidationSchema,

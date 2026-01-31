@@ -5,7 +5,7 @@ import { Repository, Between, MoreThanOrEqual, LessThanOrEqual } from 'typeorm';
 import { Budget } from '../../../database/entities/budget.entities';
 import { Debt } from '../../../database/entities/debts.entities';
 import { FinancialInsight } from '../../../database/entities/financial-insight.entities';
-import { BudgetCategory, DebtDirection } from '../../../database/enums';
+import { BudgetCategory } from '../../../database/enums';
 
 import { GetFinancialReportDto } from './dto/request.dto';
 import { FinancialReportResponseDto } from './dto/response.dto';
@@ -66,24 +66,14 @@ export class FinancialReportService {
       }),
     );
 
-    // Get debts in the period
-    const debts = await this.debtRepo.find({
-      where: {
-        userId,
-        dueDate: Between(
-          startDate.toISOString().split('T')[0],
-          endDate.toISOString().split('T')[0],
-        ),
-      },
-    });
-
-    const totalDebtsOwed = debts
-      .filter((d) => d.direction === DebtDirection.OWED_TO_ME)
-      .reduce((sum, d) => sum + Number(d.amount), 0);
-
-    const totalDebtsOwe = debts
-      .filter((d) => d.direction === DebtDirection.I_OWE)
-      .reduce((sum, d) => sum + Number(d.amount), 0);
+    // Note: Debt data can be queried here for future use
+    // Example:
+    // const debts = await this.debtRepo.find({
+    //   where: {
+    //     userId,
+    //     dueDate: Between(startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]),
+    //   },
+    // });
 
     // Calculate weekly expenses (mock for now - would need transaction data)
     const weeklyExpenses = this.calculateWeeklyExpenses(startDate, endDate);

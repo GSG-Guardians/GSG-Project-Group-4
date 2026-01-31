@@ -72,7 +72,7 @@ export class DebtService {
     const { page, limit, skip, take } =
       this.databaseService.createPaginationOptions(query);
 
-    const where: any = { userId };
+    const where: Record<string, unknown> = { userId };
 
     if (filter?.direction) {
       where.direction = filter.direction;

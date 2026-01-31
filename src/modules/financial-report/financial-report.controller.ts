@@ -20,7 +20,6 @@ import { FinancialReportResponseSwaggerDto } from './dto/swagger.dto';
 import { ZodValidationPipe } from '../../pipes/zodValidation.pipe';
 import { getFinancialReportValidationSchema } from './schema/financial-report.schema';
 import { ApiSuccess } from '../../helpers/swaggerDTOWrapper.helpers';
-import { BudgetCategory } from '../../../database/enums';
 
 @ApiTags('Financial Reports')
 @Controller('financial-reports')
