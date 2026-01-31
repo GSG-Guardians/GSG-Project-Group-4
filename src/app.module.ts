@@ -33,4 +33,4 @@ import { AuthModule } from './modules/auth/auth.module';
   ],
 })
 // eslint-disable-next-line prettier/prettier
-export class AppModule { }
+export class AppModule {}

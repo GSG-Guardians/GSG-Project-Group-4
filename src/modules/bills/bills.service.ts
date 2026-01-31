@@ -8,8 +8,7 @@ import { Repository } from 'typeorm';
 import { Bill } from '../../../database/entities/bills.entities';
 import { GroupInvoice } from '../../../database/entities/group-invoice.entities';
 import { BillStatus, GroupInvoiceStatus } from '../../../database/enums';
-import { CreateBillDto } from './dto/create-bill.dto';
-import { UpdateBillDto } from './dto/update-bill.dto';
+import { type TCreateBillRequest, type TUpdateBillRequest } from './dto';
 
 export type BillType = 'individual' | 'group';
 
@@ -140,7 +139,7 @@ export class BillsService {
     };
   }
 
-  async createBill(dto: CreateBillDto) {
+  async createBill(dto: TCreateBillRequest) {
     if (!dto.type) {
       throw new BadRequestException('type is required');
     }
@@ -197,7 +196,7 @@ export class BillsService {
     };
   }
 
-  async updateBill(id: string, dto: UpdateBillDto) {
+  async updateBill(id: string, dto: TUpdateBillRequest) {
     const bill = await this.billRepository.findOne({ where: { id } });
     if (bill) {
       if (dto.name !== undefined) bill.name = dto.name;
